@@ -21,16 +21,6 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     
 })
 .service('BookAPIService', ['$http', function($http) {
-  
-  this.searchBooks = function(querySearch) {
-    function successCallBack(resp) {
-      console.log(resp)
-    }
-    
-    function errorCallBack(err) {
-      console.error(err);
-    }
-    
     function mapGoodReadsJsonToSimpleJson(book) {
         var matchingBook = book.best_book;
         return {
@@ -56,28 +46,29 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
       }
       return [];
     }
-    
-    var url = 'https://www.goodreads.com/search/index.xml?key=mvIa4J4YnsVxPvwQN45UzA&q=' + querySearch;
-    
-    return $http.get(url, {
-      transformResponse : xmlToJson
-    });    
-  };
+  
+    this.searchBooks = function(querySearch) {
+      var url = 'https://www.goodreads.com/search/index.xml?key=mvIa4J4YnsVxPvwQN45UzA&q=' + querySearch;
+
+      return $http.get(url, {
+        transformResponse : xmlToJson
+      });    
+    };
 }])
 .controller('TryNewBookController', ['$q', '$timeout', 'BookAPIService', 
                                      function($q, $timeout, BookAPIService) {
-  var vm = this;
-  
-  vm.books =  [ 
-    { 'title' : 'Cosmos', 'author' : 'Carl Sagan'},
-    { 'title' :  'The brothers karamzov', 'author' : 'Dastovesky'},
-    { 'title' :  'Sapiens', 'author' : 'Harari'}
-  ];
-  
-  vm.newSelectedBook;
-  vm.searchText = '';
-  
-  vm.querySearch = function (query) {
+    var vm = this;
+    vm.selectedBook;                                   
+    vm.books =  [ 
+      { 'title' : 'Cosmos', 'author' : 'Carl Sagan'},
+      { 'title' :  'The brothers karamzov', 'author' : 'Dastovesky'},
+      { 'title' :  'Sapiens', 'author' : 'Harari'}
+    ];
+
+    vm.newSelectedBook;
+    vm.searchText = '';
+
+    vm.querySearch = function (query) {
       var deferred = $q.defer();
       BookAPIService.searchBooks(query).then(function(resp) { 
         deferred.resolve(resp.data);  
@@ -85,17 +76,12 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
         deferred.reject(err);
       });
       return deferred.promise;
-    }
-  
-  function createFilterFor(query) {
-    var lowercaseQuery = angular.lowercase(query);
-
-    return function(book) {
-      return (book.title.toLowerCase().indexOf(lowercaseQuery) !== -1);
     };
-
-  }
-  
+    
+    vm.bookSelected = function(book) {
+      vm.selectedBook = book;
+    };
+                                       
 }])
 .config(function($mdIconProvider) {
   $mdIconProvider

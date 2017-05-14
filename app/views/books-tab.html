@@ -6,25 +6,13 @@
               md-search-text="vm.searchText"
               md-selected-item-change="vm.selectedItemChange(item)"
               md-items="item in vm.querySearch(vm.searchText)"
+              md-selected-item-change="vm.bookSelected(item)"
               md-item-text="item.title"
               md-min-length="3"
               md-clear-button="true"
               placeholder="Try new book"
               md-menu-class="autocomplete-custom-template">
             <md-item-template>
-<!--
-              
-               <span class="item-title">
-                <md-icon md-svg-icon="book"></md-icon>
-                <span> <strong>{{item.title}}</strong></span>
-              </span>
-              <span class="item-metadata">
-                <span>
-                  by {{item.author}}
-                </span>
-              </span>
--->
-              
               <div layout="row">
                 <div>
                   <img ng-src="{{item.imageUrl}}">
@@ -34,7 +22,6 @@
                   <div>{{item.author}}</div>
                 </div>
               </div>
-              
             </md-item-template>
             <md-not-found>
               Not book found for "{{vm.searchText}}".
@@ -42,20 +29,27 @@
         </md-autocomplete>
     </div>
   </md-content>
+  <md-content ng-if="vm.newSelectedBook" layout-padding>
+    <div layout="row">
+        <div flex="20">
+          <img ng-src="{{vm.newSelectedBook.imageUrl}}">
+        </div>
+        <div layout="column" class="suggestion-book-details" flex="70">
+          <div><strong>{{vm.newSelectedBook.title}}</strong></div>
+          <div>{{vm.newSelectedBook.author}}</div>
+        </div>
+        <div flex="10">
+          <md-button class="md-icon-button"  ng-click="vm.addNewBook()" aria-label="Add">
+            <md-icon md-svg-icon="add"></md-icon>
+          </md-button>
+        </div>
+    </div>
+  </md-content>
   <md-content>
     <section>
       <md-subheader class="md-primary">Your books to try</md-subheader>
       <md-list layout-padding>
-        <md-list-item class="md-3-line" ng-repeat="message in messages">
-            <img ng-src="{{message.face}}" class="md-avatar" alt="{{message.who}}">
-            <div class="md-list-item-text">
-              <h3>{{message.what}}</h3>
-              <h4>{{message.who}}</h4>
-              <p>
-                {{message.notes}}
-              </p>
-            </div>
-        </md-list-item>
+        
       </md-list>
     </section>
   </md-content>
