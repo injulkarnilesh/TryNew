@@ -1,0 +1,18 @@
+<md-toolbar md-scroll-shrink>
+  <div class="md-toolbar-tools">
+    <h1 ng-if="vm.flags.showTitle">Try New</h1>
+    <md-autocomplete ng-if="!vm.flags.showTitle"
+                     md-clear-button="false"
+                     md-search-text="vm.localSearch.searchText"
+                     md-items="vm.localSearch.localTrys"
+                     md-min-length="2"
+                     placeholder="Search your content"></md-autocomplete>
+    <md-button class="md-icon-button"  ng-click="vm.toggleLocalSearch()"
+               aria-label="Search">
+      <md-icon md-svg-icon="magnify"></md-icon>
+    </md-button>
+    <md-button class="md-icon-button" aria-label="More">
+      <md-icon md-svg-icon="dots-vertical"></md-icon>
+    </md-button>
+  </div>
+</md-toolbar>

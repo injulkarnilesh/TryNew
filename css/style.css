@@ -1,0 +1,21 @@
+md-toolbar h1 {
+  font-size: 1.250em;
+  font-weight: 400;
+  margin: auto
+}
+
+.autocomplete-custom-template li {
+  border-bottom: 1px solid #ccc;
+  height: auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  white-space: normal;
+}
+.autocomplete-custom-template li:last-child {
+  border-bottom-width: 0;
+}
+
+.autocomplete-custom-template .suggestion-book-details {
+  padding-left: 10px;
+  line-height: 25px;
+}
