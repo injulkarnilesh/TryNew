@@ -7,11 +7,11 @@
     <link rel="stylesheet" type="text/css" href="lib/angular/angular-material-icons.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
   </head>
-  <body ng-controller="TryNewRootController as vm" layout="row">
+  <body ng-controller="TryNewRootController as vm" layout="row" ng-cloak>
     <div layout="column" flex>
       <div ng-include="'app/views/toolbar.html'"></div>
       <md-content flex>
-        <md-tabs md-selected="vm.tabs.selectedIndex" md-stretch-tabs="always">
+        <md-tabs md-selected="vm.tabs.selectedIndex" md-stretch-tabs="always" md-dynamic-height>
           <md-tab id="books_tab">
             <md-tab-label>
               <md-icon md-svg-icon="book" aria-label="Books"></md-icon>

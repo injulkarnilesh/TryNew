@@ -49,7 +49,16 @@
     <section>
       <md-subheader class="md-primary">Your books to try</md-subheader>
       <md-list layout-padding>
-        
+        <md-list-item ng-repeat="myBook in vm.myBooks track by myBook.id" 
+                      class="noright book-list" layout="row" layout-padding>
+            <div flex="20" class="md-primary">
+              <img ng-src="{{myBook.imageUrl}}">
+            </div>
+            <div flex="80">
+              <div><strong>{{myBook.title}}</strong></div>
+              <div>{{myBook.author}}</div>
+            </div>
+        </md-list-item>
       </md-list>
     </section>
   </md-content>
