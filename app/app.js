@@ -79,12 +79,6 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     var vm = this;
                                              $animate.enabled(true);
     vm.selectedBook;                                   
-    vm.books =  [ 
-      { 'title' : 'Cosmos', 'author' : 'Carl Sagan'},
-      { 'title' :  'The brothers karamzov', 'author' : 'Dastovesky'},
-      { 'title' :  'Sapiens', 'author' : 'Harari'}
-    ];
-                                       
     vm.newSelectedBook;
     vm.searchText = '';
     vm.myBooks = [];
@@ -113,7 +107,14 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
       console.log('BEFORE ADD', vm.myBooks);
       vm.myBooks.unshift(vm.newSelectedBook);
       StorageService.setBooks(vm.myBooks, function() {
-        console.log('ADDED');
+        vm.newSelectedBook = undefined;
+      });
+    };
+           
+    vm.deleteBook = function(id) {
+      vm.myBooks = vm.myBooks.filter(function(book) { return book.id !== id; });
+      StorageService.setBooks(vm.myBooks, function() {
+        console.log('REMOVED');
       });
     };
                                        
@@ -127,6 +128,7 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     .icon('movie-tv', 'images/icons/message-video.svg', 24)
     .icon('music', 'images/icons/music.svg', 24)
     .icon('star', 'images/icons/star.svg', 24)
+    .icon('close', 'images/icons/close.svg', 24)
     .icon('goodreads', 'images/icons/goodreads.svg', 12)
     .icon('delete', 'images/icons/delete.svg', 12)
     .icon('open', 'images/icons/open-in-new.svg', 12)
