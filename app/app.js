@@ -105,14 +105,7 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
                                        
     vm.addNewBook = function() {
       addBook(vm.newSelectedBook)
-    };
-
-    function addBook(bookToAdd) {
-      vm.myBooks.unshift(bookToAdd);
-      StorageService.setBooks(vm.myBooks, function() {
-        vm.newSelectedBook = undefined;
-      });
-    }                                       
+    };                                     
            
     vm.deleteBook = function(bookToDelete) {
       vm.lastDeletedBook = bookToDelete;
@@ -135,6 +128,26 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
         }
       });
     };
+
+    function addBook(bookToAdd) {
+      var existing = vm.myBooks.filter(function(book) { return bookToAdd.id === book.id;} )
+      if(existing.length) {
+        showDuplicateMessage();
+      } else {
+        vm.myBooks.unshift(bookToAdd);
+        StorageService.setBooks(vm.myBooks, function() {
+          console.log('ADDED');
+        });
+      }
+    }  
+                                       
+    function showDuplicateMessage() {
+      $mdToast.show($mdToast.simple()
+        .textContent('Already Added')
+        .position('bottom right')
+        .hideDelay(2500)
+      );
+    }
                                        
 }])
 .config(function($mdIconProvider) {
