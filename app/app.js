@@ -74,14 +74,14 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
   }
   
 }])
-.controller('TryNewBookController', ['$q', '$timeout', 'BookAPIService', 'StorageService', '$animate',
-                                     function($q, $timeout, BookAPIService, StorageService, $animate) {
+.controller('TryNewBookController', ['$q', '$timeout', 'BookAPIService', 'StorageService', '$mdToast',
+                                     function($q, $timeout, BookAPIService, StorageService, $mdToast) {
     var vm = this;
-                                             $animate.enabled(true);
     vm.selectedBook;                                   
     vm.newSelectedBook;
     vm.searchText = '';
     vm.myBooks = [];
+    vm.lastDeletedBook;
             
     StorageService.getBooks(function(books) {
       console.log(books);
@@ -104,17 +104,35 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     };
                                        
     vm.addNewBook = function() {
-      console.log('BEFORE ADD', vm.myBooks);
-      vm.myBooks.unshift(vm.newSelectedBook);
+      addBook(vm.newSelectedBook)
+    };
+
+    function addBook(bookToAdd) {
+      vm.myBooks.unshift(bookToAdd);
       StorageService.setBooks(vm.myBooks, function() {
         vm.newSelectedBook = undefined;
       });
-    };
+    }                                       
            
-    vm.deleteBook = function(id) {
-      vm.myBooks = vm.myBooks.filter(function(book) { return book.id !== id; });
+    vm.deleteBook = function(bookToDelete) {
+      vm.lastDeletedBook = bookToDelete;
+      vm.myBooks = vm.myBooks.filter(function(book) { return book.id !== bookToDelete.id; });
       StorageService.setBooks(vm.myBooks, function() {
-        console.log('REMOVED');
+        showDeletedMessage();
+      });
+    };
+                                       
+    function showDeletedMessage() {
+      var toast = $mdToast.simple()
+        .textContent('Removed')
+        .action('UNDO')
+        .highlightAction(true)
+        .position('bottom right');
+
+      $mdToast.show(toast).then(function(response) {
+        if ( response == 'ok' ) {
+          addBook(vm.lastDeletedBook);
+        }
       });
     };
                                        
