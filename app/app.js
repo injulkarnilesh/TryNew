@@ -105,25 +105,41 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
 }])
 .service('StorageService', [ function() {
   var book_key = 'TryNewBooks';
+  var movie_key = 'TryNewMovies';
   
-  this.getBooks = function(callBack) {
-    chrome.storage.sync.get(book_key, function(data) {
-      console.log('LOADED', data);
-      callBack(data[book_key]);
-    });
-  };
-  
-  this.setBooks = function(books, callBack) {
-    var bookList = {};
-    bookList[book_key] = books;
-    chrome.storage.sync.set(bookList, function() {
-      callBack();
+  function getStorage(key, callback) {
+    chrome.storage.sync.get(key, function(data) {
+      callback(data[key]);
     });
   }
   
+  function setStorage(key, objects, callback) {
+    var objectList = {};
+    objectList[key] = objects;
+    chrome.storage.sync.set(objectList, function() {
+      callback();
+    })
+  }
+  
+  this.getBooks = function(callBack) {
+    getStorage(book_key, callBack);
+  };
+  
+  this.setBooks = function(books, callBack) {
+    setStorage(book_key, books, callBack);
+  }
+  
+  this.getMovies = function(callBack) {
+    getStorage(movie_key, callBack);
+  };
+  
+  this.setMovies = function(movies, callBack) {
+    setStorage(movie_key, movies, callBack);
+  }
+  
 }])
-.controller('TryNewBookController', ['$q', '$timeout', 'BookAPIService', 'StorageService', '$mdToast',
-                                     function($q, $timeout, BookAPIService, StorageService, $mdToast) {
+.controller('TryNewBookController', ['$q', '$timeout', 'BookAPIService', 'StorageService', '$mdToast', 'ToastService',
+                                     function($q, $timeout, BookAPIService, StorageService, $mdToast, ToastService) {
     var vm = this;
     vm.selectedBook;                                   
     vm.newSelectedBook;
@@ -132,9 +148,7 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     vm.lastDeletedBook;
             
     StorageService.getBooks(function(books) {
-      console.log(books);
       vm.myBooks = (books && books.length) ? books : [];
-      console.log(vm.myBooks);
     });
 
     vm.querySearch = function (query) {
@@ -162,57 +176,107 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
         showDeletedMessage();
       });
     };
+    
+    function undoDelete() {
+      addBook(vm.lastDeletedBook);
+    }
                                        
     function showDeletedMessage() {
-      var toast = $mdToast.simple()
-        .textContent('Removed')
-        .action('UNDO')
-        .highlightAction(true)
-        .position('bottom right');
-
-      $mdToast.show(toast).then(function(response) {
-        if ( response == 'ok' ) {
-          addBook(vm.lastDeletedBook);
-        }
-      });
+      ToastService.showMessageWithAction('Removed', 'UNDO', undoDelete);
     };
 
     function addBook(bookToAdd) {
       var existing = vm.myBooks.filter(function(book) { return bookToAdd.id === book.id;} )
       if(existing.length) {
-        showDuplicateMessage();
+        ToastService.showMessage('Already Added');
       } else {
         vm.myBooks.unshift(bookToAdd);
         StorageService.setBooks(vm.myBooks, function() {
           console.log('ADDED');
         });
       }
-    }  
-                                       
-    function showDuplicateMessage() {
-      $mdToast.show($mdToast.simple()
-        .textContent('Already Added')
-        .position('bottom right')
-        .hideDelay(2500)
-      );
     }
                                        
 }])
-.controller('TryNewMovieController', ['MovieAPIService', function(MovieAPIService) {
+.service('ToastService', ['$mdToast', function($mdToast) {
+  
+  this.showMessage = function(message) {
+    $mdToast.show($mdToast.simple()
+        .textContent(message)
+        .position('bottom right')
+        .hideDelay(2500)
+      );
+  }
+  
+  this.showMessageWithAction = function(message, action, callback) {
+      var toast = $mdToast.simple()
+        .textContent(message)
+        .action(action)
+        .highlightAction(true)
+        .position('bottom right');
+
+      $mdToast.show(toast).then(function(response) {
+        if ( response == 'ok' ) {
+          callback();
+        }
+      });
+  }
+  
+}])
+.controller('TryNewMovieController', ['MovieAPIService', 'StorageService', 'ToastService', function(MovieAPIService, StorageService, ToastService) {
     var vm = this;
     
     vm.selectedMovie;                                   
     vm.newSelectedMovie;
     vm.searchText = '';
-  
-    vm.querySearch = function (query) {
-      return MovieAPIService.searchMovies(query);
-    };
+    vm.myMovies = [];
+    vm.lastDeletedMovie;
+            
+    StorageService.getMovies(function(movies) {
+      vm.myMovies = (movies && movies.length) ? movies : [];
+    });
     
     vm.movieSelected = function(movie) {
       vm.selectedMovie = movie;
     };
+  
+    vm.querySearch = function (query) {
+      return MovieAPIService.searchMovies(query);
+    };
+                                       
+    vm.addNewMovie = function() {
+      addMovie(vm.newSelectedMovie);
+    };                                     
+           
+    vm.deleteMovie = function(movieToDelete) {
+      vm.lastDeletedMovie = movieToDelete;
+      vm.myMovies = vm.myMovies.filter(function(movie) { return movie.id !== movieToDelete.id; });
+      StorageService.setMovies(vm.myMovies, function() {
+        showDeletedMessage();
+      });
+    };
     
+    function undoDelete() {
+      addMovie(vm.lastDeletedMovie);
+    }
+                                       
+    function showDeletedMessage() {
+      ToastService.showMessageWithAction('Removed', 'UNDO', undoDelete);
+    };
+
+    function addMovie(movieToAdd) {
+      var existing = vm.myMovies.filter(function(movie) { return movieToAdd.id === movie.id;} )
+      if(existing.length) {
+        ToastService.showMessage('Already Added');
+      } else {
+        vm.myMovies.unshift(movieToAdd);
+        StorageService.setMovies(vm.myMovies, function() {
+          console.log('ADDED');
+        });
+      }
+    }
+  
+  
 }])
 .config(function($mdIconProvider) {
   $mdIconProvider
