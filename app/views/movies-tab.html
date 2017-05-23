@@ -1,0 +1,34 @@
+<div ng-controller="TryNewMovieController as vm">
+  <md-content layout-padding>
+    <div>
+      <md-autocomplete
+              md-selected-item="vm.newSelectedMovie"
+              md-search-text="vm.searchText"
+              md-selected-item-change="vm.selectedItemChange(item)"
+              md-items="item in vm.querySearch(vm.searchText)"
+              md-selected-item-change="vm.movieSelected(item)"
+              md-item-text="item.title"
+              md-min-length="3"
+              md-clear-button="true"
+              placeholder="Try new movie"
+              md-menu-class="autocomplete-custom-template">
+            <md-item-template>
+              <div layout="row">
+                <div>
+                  <img ng-src="{{item.imageUrl}}" width="50" height="75">
+                </div>
+                <div layout="column" class="suggestion-book-details">
+                  <div><strong>{{item.title}}</strong></div>
+                  <div>{{item.year}}</div>
+                  <div><i>{{item.cast}}</i></div>
+                </div>
+              </div>
+            </md-item-template>
+            <md-not-found>
+              Not book found for "{{vm.searchText}}".
+            </md-not-found>
+        </md-autocomplete>
+    </div>
+  </md-content>
+  
+</div>

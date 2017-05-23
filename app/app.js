@@ -55,6 +55,54 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
       });    
     };
 }])
+.service('MovieAPIService', ['$http', '$sce', '$q', function($http, $sce, $q){
+  
+  var defaultImageURL = '/images/imdb_default.png'
+  
+  function getImageUrl(imdbMovie) {
+    if(imdbMovie.i && imdbMovie.i.length && imdbMovie.i[0]) {
+      return imdbMovie.i[0];
+    }
+    return defaultImageURL;
+  }
+  
+  function mapIMDBMovieToSimplJson(imdbMovie) {
+    var json = {};
+    json.title = imdbMovie.l;
+    json.cast = imdbMovie.s;
+    json.year = imdbMovie.y;
+    json.id = imdbMovie.id;
+    json.imageUrl = getImageUrl(imdbMovie)
+    return json;
+  }
+  
+  this.searchMovies = function(querySearch) {
+      var indexLetter = querySearch.charAt(0).toLocaleLowerCase();
+      var url = 'https://sg.media-imdb.com/suggests/' + indexLetter + '/' + querySearch +'.json'; 
+      var callBackParam = 'imdb$' + querySearch.replace(/ /g, '_');
+      var safeUrl = $sce.trustAsResourceUrl(url);
+      var deferred = $q.defer();
+    
+      jQuery.ajax({
+          url: url,
+          dataType: 'jsonp',
+          cache: true,
+          jsonp: false,
+          jsonpCallback: callBackParam
+      }).done(function (result) {
+          var data = result.d || [];
+          var movies = data.map(mapIMDBMovieToSimplJson);
+          console.log('MOVIES', movies);
+          deferred.resolve(movies);
+      }).fail(function(err) {
+        deferred.reject([]);
+        console.error('Error talking to IMDB', err);
+      });
+    
+      return deferred.promise;
+  }
+  
+}])
 .service('StorageService', [ function() {
   var book_key = 'TryNewBooks';
   
@@ -149,6 +197,22 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
       );
     }
                                        
+}])
+.controller('TryNewMovieController', ['MovieAPIService', function(MovieAPIService) {
+    var vm = this;
+    
+    vm.selectedMovie;                                   
+    vm.newSelectedMovie;
+    vm.searchText = '';
+  
+    vm.querySearch = function (query) {
+      return MovieAPIService.searchMovies(query);
+    };
+    
+    vm.movieSelected = function(movie) {
+      vm.selectedMovie = movie;
+    };
+    
 }])
 .config(function($mdIconProvider) {
   $mdIconProvider
