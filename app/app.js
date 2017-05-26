@@ -1,8 +1,13 @@
 'use strict';
 
 angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
-.controller('TryNewRootController', function() {
-    var vm = this;  
+.controller('TryNewRootController', ['StorageService', function(StorageService) {
+    var vm = this;
+  
+    StorageService.getLastTab(function(tabs) {
+      vm.tabs = tabs ||  { selectedIndex : 0 } ;
+    });
+  
     vm.flags = {
       'showTitle' : true
     }
@@ -17,9 +22,13 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     
     vm.toggleLocalSearch = function() {
         vm.flags.showTitle = !vm.flags.showTitle;
-    }
+    };
     
-})
+    vm.tabChanged = function() {
+      StorageService.setLastTab(vm.tabs);
+    };
+    
+}])
 .service('BookAPIService', ['$http', function($http) {
     function mapGoodReadsJsonToSimpleJson(book) {
         var matchingBook = book.best_book;
@@ -106,10 +115,13 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
 .service('StorageService', [ function() {
   var book_key = 'TryNewBooks';
   var movie_key = 'TryNewMovies';
+  var tab_key = 'TryNewTab';
   
   function getStorage(key, callback) {
     chrome.storage.sync.get(key, function(data) {
-      callback(data[key]);
+      if(callback) {
+        callback(data[key]);
+      }
     });
   }
   
@@ -117,7 +129,9 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     var objectList = {};
     objectList[key] = objects;
     chrome.storage.sync.set(objectList, function() {
-      callback();
+      if(callback) {
+        callback();
+      }
     })
   }
   
@@ -135,6 +149,14 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
   
   this.setMovies = function(movies, callBack) {
     setStorage(movie_key, movies, callBack);
+  }
+  
+  this.setLastTab = function(tabDetails) {
+    setStorage(tab_key, tabDetails);
+  }
+  
+  this.getLastTab = function(callback) {
+    getStorage(tab_key, callback);
   }
   
 }])

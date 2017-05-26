@@ -12,7 +12,7 @@
       <div ng-include="'app/views/toolbar.html'"></div>
       <md-content flex>
         <md-tabs md-selected="vm.tabs.selectedIndex" md-stretch-tabs="always" md-dynamic-height>
-          <md-tab id="books_tab">
+          <md-tab id="books_tab" md-on-select="vm.tabChanged()">
             <md-tab-label>
               <md-icon md-svg-icon="book" aria-label="Books"></md-icon>
             </md-tab-label>
@@ -21,7 +21,7 @@
             </md-tab-body>
           </md-tab>
           
-          <md-tab id="movies_tab">
+          <md-tab id="movies_tab" md-on-select="vm.tabChanged()">
             <md-tab-label>
               <md-icon md-svg-icon="movie-tv" aria-label="Books"></md-icon>
             </md-tab-label>
@@ -30,7 +30,7 @@
             </md-tab-body>
           </md-tab>
           
-          <md-tab id="music_tab">
+          <md-tab id="music_tab" md-on-select="vm.tabChanged()">
             <md-tab-label>
               <md-icon md-svg-icon="music" aria-label="Music"></md-icon>
             </md-tab-label>
@@ -39,7 +39,7 @@
             </md-tab-body>
           </md-tab>
           
-          <md-tab id="misc_tab">
+          <md-tab id="misc_tab" md-on-select="vm.tabChanged()">
             <md-tab-label>
               <md-icon md-svg-icon="star" aria-label="Misc"></md-icon>
             </md-tab-label>
