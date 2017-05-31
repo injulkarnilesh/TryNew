@@ -15,7 +15,7 @@
             <md-item-template>
               <div layout="row">
                 <div>
-                  <img ng-src="{{item.imageUrl}}">
+                  <img ng-src="{{item.imageUrl}}"  width="50" height="75">
                 </div>
                 <div layout="column" class="suggestion-book-details">
                   <div><strong>{{item.title}}</strong></div>
@@ -32,7 +32,7 @@
   <md-content ng-if="vm.newSelectedBook" layout-padding>
     <div layout="row">
         <div flex="20">
-          <img ng-src="{{vm.newSelectedBook.imageUrl}}">
+          <img ng-src="{{vm.newSelectedBook.imageUrl}}" width="50" height="75">
         </div>
         <div layout="column" class="suggestion-book-details" flex="70">
           <div><strong>{{vm.newSelectedBook.title}}</strong></div>
@@ -52,7 +52,7 @@
         <md-list-item ng-repeat="myBook in vm.myBooks track by myBook.id" 
                       class="noright book-list" layout="row" layout-padding>
             <div flex="20" class="md-primary">
-              <img ng-src="{{myBook.imageUrl}}">
+              <img ng-src="{{myBook.imageUrl}}" width="50" height="75">
             </div>
             <div flex="70">
               <div>
