@@ -1,37 +1,31 @@
 <div ng-controller="TryNewMusicController as vm">
-  Music from youtube.
-  <button class="btn" ng-click="vm.call()">CLICK</button>
-<!--
   <md-content layout-padding>
     <div>
       <md-autocomplete
-              md-selected-item="vm.newSelectedMovie"
+              md-selected-item="vm.newSelectedMusic"
               md-search-text="vm.searchText"
               md-selected-item-change="vm.selectedItemChange(item)"
               md-items="item in vm.querySearch(vm.searchText)"
-              md-selected-item-change="vm.movieSelected(item)"
+              md-selected-item-change="vm.musicSelected(item)"
               md-item-text="item.title"
               md-min-length="3"
               md-clear-button="true"
-              placeholder="Try new movie"
+              placeholder="Try new music"
               md-menu-class="autocomplete-custom-template">
             <md-item-template>
               <div layout="row">
                 <div>
-                  <img ng-src="{{item.imageUrl}}" width="50" height="75">
+                  <img ng-src="{{item.imageUrl}}" width="120" height="90">
                 </div>
                 <div layout="column" class="suggestion-book-details">
                   <div><strong>{{item.title}}</strong></div>
-                  <div>{{item.year}}</div>
-                  <div class="md-caption">{{item.cast}}</div>
                 </div>
               </div>
             </md-item-template>
             <md-not-found>
-              Not book found for "{{vm.searchText}}".
+              Not music found for "{{vm.searchText}}".
             </md-not-found>
         </md-autocomplete>
     </div>
   </md-content>
--->
 </div>

@@ -348,7 +348,21 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
         console.log(resp);
       });    
     };
-    
+  
+    vm.selectedMusic;                                   
+    vm.newSelectedMusic;
+    vm.searchText = '';
+    vm.myMusic = [];
+    vm.lastDeletedMusic;
+            
+    vm.musicSelected = function(music) {
+      vm.selectedMusic = music;
+    };
+  
+    vm.querySearch = function (query) {
+      return MusicAPIService.searchMusic(query);
+    };
+          
 }])
 .config(function($mdIconProvider) {
   $mdIconProvider
