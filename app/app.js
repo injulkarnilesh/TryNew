@@ -115,6 +115,7 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
 .service('StorageService', [ function() {
   var book_key = 'TryNewBooks';
   var movie_key = 'TryNewMovies';
+  var music_key = 'TryNewMusic';
   var tab_key = 'TryNewTab';
   
   function getStorage(key, callback) {
@@ -149,6 +150,14 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
   
   this.setMovies = function(movies, callBack) {
     setStorage(movie_key, movies, callBack);
+  }
+  
+  this.setMusic = function(music, callBack) {
+    setStorage(music_key, music, callBack);
+  }
+  
+  this.getMusic = function(callBack) {
+    getStorage(music_key, callBack);
   }
   
   this.setLastTab = function(tabDetails) {
@@ -340,7 +349,7 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
   };
   
 }])
-.controller('TryNewMusicController', ['MusicAPIService', function(MusicAPIService) {
+.controller('TryNewMusicController', ['MusicAPIService', 'StorageService', 'ToastService', function(MusicAPIService, StorageService, ToastService) {
     var vm = this;
   
     vm.call = function() {
@@ -362,6 +371,42 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     vm.querySearch = function (query) {
       return MusicAPIService.searchMusic(query);
     };
+  
+    StorageService.getMusic(function(music) {
+      vm.myMusic = (music && music.length) ? music : [];
+    });
+    
+    vm.addNewMusic = function() {
+      addMusic(vm.newSelectedMusic);
+    };                                     
+           
+    vm.deleteMusic = function(musicToDelete) {
+      vm.lastDeletedMusic = musicToDelete;
+      vm.myMusic = vm.myMusic.filter(function(music) { return music.id !== musicToDelete.id; });
+      StorageService.setMusic(vm.myMusic, function() {
+        showDeletedMessage();
+      });
+    };
+    
+    function undoDelete() {
+      addMusic(vm.lastDeletedMusic);
+    }
+                                       
+    function showDeletedMessage() {
+      ToastService.showMessageWithAction('Removed', 'UNDO', undoDelete);
+    };
+
+    function addMusic(musicToAdd) {
+      var existing = vm.myMusic.filter(function(music) { return musicToAdd.id === music.id;} )
+      if(existing.length) {
+        ToastService.showMessage('Already Added');
+      } else {
+        vm.myMusic.unshift(musicToAdd);
+        StorageService.setMusic(vm.myMusic, function() {
+          console.log('ADDED');
+        });
+      }
+    }
           
 }])
 .config(function($mdIconProvider) {
