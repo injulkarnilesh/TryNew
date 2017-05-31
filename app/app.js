@@ -300,6 +300,56 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
   
   
 }])
+.service('MusicAPIService', ['$http', '$q', function($http, $q) {
+  var url = 'https://www.googleapis.com/youtube/v3/search?type=video&videoCategoryId =10&part=snippet&&key=AIzaSyDI91qonfjVeIxydlsxjU3sxhoMCHgy4-g&q='
+  
+  function getImageUrl(thumbnail) {
+    return thumbnail.url || '/images/youtube-default.png';
+  }
+  
+  function getRequiredFields(resp) {
+    var items = resp && resp.data && resp.data.items;
+    
+    if(items) {
+      return items.map(function(youtubeItem) {
+        return {
+          id : youtubeItem.id.videoId,
+          title : youtubeItem.snippet.title,
+          imageUrl : getImageUrl(youtubeItem.snippet.thumbnails['default'])
+        }
+      });
+    } else {
+      return [];
+    }
+  }
+    
+  this.searchMusic = function(query) {
+    var defered = $q.defer();
+    
+    function success(resp) {
+      defered.resolve(getRequiredFields(resp));
+    }
+    
+    function error(resp) {
+      defered.reject([]);
+    }
+    
+    $http.get(url + query).then(success, error);
+    
+    return defered.promise;
+  };
+  
+}])
+.controller('TryNewMusicController', ['MusicAPIService', function(MusicAPIService) {
+    var vm = this;
+  
+    vm.call = function() {
+      MusicAPIService.searchMusic('jesus of').then(function(resp) {
+        console.log(resp);
+      });    
+    };
+    
+}])
 .config(function($mdIconProvider) {
   $mdIconProvider
     .icon('magnify', 'images/icons/magnify.svg', 24)
