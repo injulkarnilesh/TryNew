@@ -2,16 +2,6 @@
      layout="column" ng-cloak 
      class="md-inline-form misc-items-container">
   
-  <div layout="row" ng-hide="vm.flags.showNewItemForm">
-      <div flex></div>
-      <div flex="20">
-        <md-button class="md-icon-button"
-                   ng-click="vm.showAdForm()" aria-label="Add">
-          <md-icon md-svg-icon="add"></md-icon>
-        </md-button>
-      </div>
-  </div>
-  
   <md-content layout-padding ng-show="vm.flags.showNewItemForm">
     <form name="miscItemsForm">
       <md-input-container class="md-block">
@@ -61,7 +51,19 @@
   
   <md-content>
     <section>
-      <md-subheader class="md-primary">Your Miscellaneous Items</md-subheader>
+  
+      <div layout="row" ng-hide="vm.flags.showNewItemForm">
+      <div flex="80">
+        <md-subheader class="md-primary">Your Miscellaneous Items</md-subheader>  
+      </div>
+      <div flex="20">
+        <md-button class="md-icon-button"
+                   ng-click="vm.showAdForm()" aria-label="Add">
+          <md-icon md-svg-icon="add"></md-icon>
+        </md-button>
+          </div>
+      </div>
+      
       <md-list layout-padding>
         <md-list-item ng-repeat="myItem in vm.myMiscItems track by $index" 
                       class="noright book-list" layout="row" layout-padding>
