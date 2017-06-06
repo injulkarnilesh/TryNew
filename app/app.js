@@ -117,6 +117,7 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons', 'ngMessages']
   var movie_key = 'TryNewMovies';
   var music_key = 'TryNewMusic';
   var tab_key = 'TryNewTab';
+  var misc_item_key = 'MiscItemKey';
   
   function getStorage(key, callback) {
     chrome.storage.sync.get(key, function(data) {
@@ -158,6 +159,14 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons', 'ngMessages']
   
   this.getMusic = function(callBack) {
     getStorage(music_key, callBack);
+  }
+  
+  this.setMiscItems = function(items, callBack) {
+    setStorage(misc_item_key, items, callBack);
+  }
+  
+  this.getMiscItems = function(callBack) {
+    getStorage(misc_item_key, callBack);
   }
   
   this.setLastTab = function(tabDetails) {
@@ -409,24 +418,63 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons', 'ngMessages']
     }
           
 }])
-.controller('TryNewMiscItemController', [function() {
+.controller('TryNewMiscItemController', ['StorageService', 'ToastService', '$scope', 
+                                         function(StorageService, ToastService, $scope) {
     var vm = this;
+    var itemExamples = [ { type : 'Shampoo', name : 'Head and Shoulders'},
+         { type : 'Hotel', name : 'The Edgewater'}, { type : 'TV', name : 'Sony Bravia KDL'},
+         { type : 'Place', name : 'BakerStreet 221B'}, { type : 'Course', name : 'Machine Learning'},
+         { type : 'Headphone', name : 'Skullcandy 2XL'}, { type : 'WebSite', name : 'HighExistene'}];
+    
+    vm.itemExample = itemExamples[Math.floor(Math.random() * itemExamples.length)];
+    var lastDeletedItems;
+  
     vm.newItem = { };
     vm.flags = {
       showNewItemForm : false
     };
+  
+    StorageService.getMiscItems(function(miscItems) {
+      vm.myMiscItems = (miscItems && miscItems.length) ? miscItems : [];
+    });
+    
   
     vm.cancelAdd = function() {
       vm.newItem = { };
       vm.flags.showNewItemForm = false;
     }
   
+    vm.showAdForm = function() {
+      vm.flags.showNewItemForm = true;
+    }
+    
     vm.addNewItem = function() {
-      if(vm.flags.showNewItemForm) {
-        
-      } else {
-        vm.flags.showNewItemForm = true;
+      addNewMiscItem(vm.newItem);
+    }
+    
+    vm.deleteItem = function(index) {
+      lastDeletedItems = vm.myMiscItems.splice(index, 1);
+      StorageService.setMiscItems(vm.myMiscItems, function() {
+        showDeletedMessage();
+      });
+    }
+    
+    function undoDelete() {
+      if(lastDeletedItems && lastDeletedItems.length) {
+        addNewMiscItem(lastDeletedItems[0]);  
       }
+    }
+                                       
+    function showDeletedMessage() {
+      ToastService.showMessageWithAction('Removed', 'UNDO', undoDelete);
+    };
+    
+    function addNewMiscItem(newMisItem) {
+      vm.myMiscItems.unshift(newMisItem);
+      StorageService.setMiscItems(vm.myMiscItems, function() {
+        vm.cancelAdd();
+        $scope.$digest();
+      });
     }
     
 }])
