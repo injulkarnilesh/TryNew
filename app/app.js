@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
+angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons', 'ngMessages'])
 .controller('TryNewRootController', ['StorageService', function(StorageService) {
     var vm = this;
   
@@ -409,6 +409,27 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     }
           
 }])
+.controller('TryNewMiscItemController', [function() {
+    var vm = this;
+    vm.newItem = { };
+    vm.flags = {
+      showNewItemForm : false
+    };
+  
+    vm.cancelAdd = function() {
+      vm.newItem = { };
+      vm.flags.showNewItemForm = false;
+    }
+  
+    vm.addNewItem = function() {
+      if(vm.flags.showNewItemForm) {
+        
+      } else {
+        vm.flags.showNewItemForm = true;
+      }
+    }
+    
+}])
 .config(function($mdIconProvider) {
   $mdIconProvider
     .icon('magnify', 'images/icons/magnify.svg', 24)
@@ -422,5 +443,6 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons'])
     .icon('goodreads', 'images/icons/goodreads.svg', 12)
     .icon('delete', 'images/icons/delete.svg', 12)
     .icon('open', 'images/icons/open-in-new.svg', 12)
-    .icon('add', 'images/icons/plus.svg', 24);
+    .icon('add', 'images/icons/plus.svg', 24)
+    .icon('clear', 'images/icons/clear.svg', 24);
 });

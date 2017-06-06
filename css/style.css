@@ -32,3 +32,7 @@ md-toolbar h1 {
   display: none;
 }
 
+.misc-items-container md-input-container {
+  margin: 7px
+}
+

@@ -1,0 +1,47 @@
+<div ng-controller="TryNewMiscItemController as vm" 
+     layout="column" ng-cloak 
+     class="md-inline-form misc-items-container">
+  
+  <div layout="row">
+      <div flex></div>
+      <div flex="40">
+        <md-button class="md-icon-button" aria-label="Cancel"
+                   ng-click="vm.cancelAdd()" ng-show="vm.flags.showNewItemForm">
+          <md-icon md-svg-icon="clear"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button" ng-class="{'md-primary' : vm.flags.showNewItemForm}"
+                   ng-click="vm.addNewItem()" aria-label="Add">
+          <md-icon md-svg-icon="add"></md-icon>
+        </md-button>
+      </div>
+  </div>
+  
+  <md-content layout-padding ng-show="vm.flags.showNewItemForm">
+    <form name="miscItemsForm">
+      <md-input-container class="md-block">
+        <label>Type</label>
+        <input required md-no-asterisk 
+               name="type" 
+               ng-model="vm.newItem.type">
+        <div ng-messages="miscItemsForm.type.$error">
+          <ng-message when="required">This is required.</ng-message>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Name</label>
+        <input required md-no-asterisk 
+               name="name" 
+               ng-model="vm.newItem.name">
+        <div ng-messages="miscItemsForm.name.$error">
+          <ng-message when="required">This is required.</ng-message>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>URL</label>
+        <input md-no-asterisk 
+               name="url" 
+               ng-model="vm.newItem.url">
+      </md-input-container>
+    </form>
+  </md-content>
+</div>

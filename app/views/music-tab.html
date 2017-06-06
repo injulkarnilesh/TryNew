@@ -15,7 +15,7 @@
             <md-item-template>
               <div layout="row">
                 <div>
-                  <img ng-src="{{item.imageUrl}}" width="120" height="90">
+                  <img ng-src="{{item.imageUrl}}" width="100" height="75">
                 </div>
                 <div layout="column" class="suggestion-book-details">
                   <div><strong>{{item.title}}</strong></div>
@@ -32,7 +32,7 @@
   <md-content ng-if="vm.newSelectedMusic" layout-padding>
     <div layout="row">
         <div flex="40">
-          <img ng-src="{{vm.newSelectedMusic.imageUrl}}" width="120" height="90">
+          <img ng-src="{{vm.newSelectedMusic.imageUrl}}" width="100" height="75">
         </div>
         <div layout="column" class="suggestion-book-details" flex="50">
           <div><strong>{{vm.newSelectedMusic.title}}</strong></div>
@@ -52,7 +52,7 @@
         <md-list-item ng-repeat="music in vm.myMusic track by music.id" 
                       class="noright book-list" layout="row" layout-padding>
             <div flex="40" class="md-primary">
-              <img ng-src="{{music.imageUrl}}"  width="120" height="90">
+              <img ng-src="{{music.imageUrl}}" width="100" height="75">
             </div>
             <div flex="50">
               <div>
