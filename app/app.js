@@ -3,12 +3,37 @@
 angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons', 'ngMessages'])
 .controller('TryNewRootController', ['StorageService', function(StorageService) {
     var vm = this;
+    vm.view = {
+      showSettings : false
+    };
   
-    StorageService.getLastTab(function(tabs) {
-      vm.tabs = tabs ||  { selectedIndex : 0 } ;
-    });
+    var defaultTabs = {
+      selectedIndex : 0,
+      allowedTabs : {
+        'books' : true,
+        'movies' : true,
+        'music' : true
+      }
+    }; 
+  
+    function loadTabs() {
+      StorageService.getLastTab(function(tabs) {
+        vm.tabs = tabs || defaultTabs;
+      });  
+    }
+  
+    loadTabs();
     
     vm.tabChanged = function() {
+      StorageService.setLastTab(vm.tabs);
+    };
+  
+    vm.toggleShowSettings = function() {
+      loadTabs();
+      vm.view.showSettings = !vm.view.showSettings;
+    }
+    
+    vm.saveSettings = function() {
       StorageService.setLastTab(vm.tabs);
     };
     
@@ -480,5 +505,8 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons', 'ngMessages']
     .icon('delete', 'images/icons/delete.svg', 12)
     .icon('open', 'images/icons/open-in-new.svg', 12)
     .icon('add', 'images/icons/plus.svg', 24)
-    .icon('clear', 'images/icons/clear.svg', 24);
+    .icon('clear', 'images/icons/clear.svg', 24)
+    .icon('save', 'images/icons/save.svg', 24)
+    .icon('settings_black', 'images/icons/settings_black.svg', 24)
+    .icon('settings', 'images/icons/settings.svg', 24);
 });

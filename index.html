@@ -11,8 +11,10 @@
     <div layout="column" flex>
       <div ng-include="'app/views/toolbar.html'"></div>
       <md-content flex>
-        <md-tabs md-selected="vm.tabs.selectedIndex" md-stretch-tabs="always" md-dynamic-height>
-          <md-tab id="books_tab" md-on-select="vm.tabChanged()">
+        <div ng-if="!vm.view.showSettings">
+          <md-tabs md-selected="vm.tabs.selectedIndex" md-stretch-tabs="always" md-dynamic-height>
+          <md-tab id="books_tab" md-on-select="vm.tabChanged()" 
+                  ng-if="vm.tabs.allowedTabs.books">
             <md-tab-label>
               <md-icon md-svg-icon="book" aria-label="Books"></md-icon>
             </md-tab-label>
@@ -21,16 +23,18 @@
             </md-tab-body>
           </md-tab>
           
-          <md-tab id="movies_tab" md-on-select="vm.tabChanged()">
+          <md-tab id="movies_tab" md-on-select="vm.tabChanged()"
+                  ng-if="vm.tabs.allowedTabs.movies">
             <md-tab-label>
-              <md-icon md-svg-icon="movie-tv" aria-label="Books"></md-icon>
+              <md-icon md-svg-icon="movie-tv" aria-label="Movies"></md-icon>
             </md-tab-label>
             <md-tab-body>
               <div ng-include="'app/views/movies-tab.html'"></div>
             </md-tab-body>
           </md-tab>
           
-          <md-tab id="music_tab" md-on-select="vm.tabChanged()">
+          <md-tab id="music_tab" md-on-select="vm.tabChanged()"
+                  ng-if="vm.tabs.allowedTabs.music">
             <md-tab-label>
               <md-icon md-svg-icon="music" aria-label="Music"></md-icon>
             </md-tab-label>
@@ -49,6 +53,10 @@
           </md-tab>
           
         </md-tabs>
+        </div>
+        <div ng-if="vm.view.showSettings">
+          <div ng-include="'app/views/settings.html'"></div>
+        </div>
       </md-content>
     </div>
     
