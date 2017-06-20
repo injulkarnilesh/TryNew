@@ -1,7 +1,5 @@
-md-toolbar h1 {
-  font-size: 1.250em;
-  font-weight: 400;
-  margin: auto
+.title-try-new {
+  font-weight: 200;
 }
 
 .autocomplete-custom-template li {

@@ -1,17 +1,12 @@
 <md-toolbar md-scroll-shrink>
-  <div class="md-toolbar-tools">
-    <h1 ng-if="vm.flags.showTitle">Try New</h1>
-    <md-autocomplete ng-if="!vm.flags.showTitle"
-                     md-clear-button="false"
-                     md-search-text="vm.localSearch.searchText"
-                     md-items="vm.localSearch.localTrys"
-                     md-min-length="2"
-                     placeholder="Search your content"></md-autocomplete>
+  <div class="md-toolbar-tools" layout="row">
+    <div flex="20">
+        <img src="/images/add-new-white.png" width="40" height="40">
+    </div>
+    <div flex="30" class="title-try-new">
+      <h1>Try New</h1>
+    </div>
     <div flex></div>
-    <md-button class="md-icon-button"  ng-click="vm.toggleLocalSearch()"
-               aria-label="Search">
-      <md-icon md-svg-icon="magnify"></md-icon>
-    </md-button>
     <md-button class="md-icon-button" aria-label="More">
       <md-icon md-svg-icon="dots-vertical"></md-icon>
     </md-button>

@@ -7,28 +7,16 @@ angular.module('chrome.plugin.trynew', ['ngMaterial', 'ngMdIcons', 'ngMessages']
     StorageService.getLastTab(function(tabs) {
       vm.tabs = tabs ||  { selectedIndex : 0 } ;
     });
-  
-    vm.flags = {
-      'showTitle' : true
-    }
-    vm.localSearch = {
-      searchText : 'ST',
-      localTrys : []
-    };
-  
-    vm.tabs = {
-      selectedIndex : 0
-    };
-    
-    vm.toggleLocalSearch = function() {
-        vm.flags.showTitle = !vm.flags.showTitle;
-    };
     
     vm.tabChanged = function() {
       StorageService.setLastTab(vm.tabs);
     };
     
 }])
+.config(function($mdThemingProvider) {
+  $mdThemingProvider.theme('default')
+    .primaryPalette('blue');
+})
 .service('BookAPIService', ['$http', function($http) {
     function mapGoodReadsJsonToSimpleJson(book) {
         var matchingBook = book.best_book;
